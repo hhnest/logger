@@ -59,21 +59,38 @@ export class MyService {
 
 ## API
 
-### /logger
+### Return global logger levels
 
-Return global logger levels.
+```
+/logger
+```
 
-### /logger/(error|warn|log|debug|verbose|reset)
 
-Change levels of logger globally.
+---
+
+### Change levels of logger globally 
+
+```
+/logger/(error|warn|log|debug|verbose|reset)
+```
 
 If specific logger has been set to another level, level of it doesn't change.
 
 ---
 
-### /logger/SpecificLogger/(error|warn|log|debug|verbose|reset)
+### Return specific logger levels 
 
-Change level of specific logger.
+```
+/logger/SpecificLogger
+```
+
+---
+
+### Change level of specific logger 
+
+```
+/logger/SpecificLogger/(error|warn|log|debug|verbose|reset)
+```
 
 If reset, remove specific and use global levels for it.  
 
