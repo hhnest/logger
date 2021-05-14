@@ -23,11 +23,16 @@ $ npm install @hhnest/logger --save
 
 ```typescript
 import {LoggerModule} from '@hhnest/logger';
+import { LogLevel } from '@nestjs/common';
+
+const initialLevel: LogLevel[] = ['error', 'warn', 'log', 'debug'];
 ...
 @Module({
   imports: [
     HttpModule,
-    LoggerModule.forRoot(),
+    LoggerModule.forRoot(initialLevel),
+    // or 
+    LoggerModule.forRoot(), // ['error', 'warn', 'log']
     ...
  ],
   controllers: [...],
