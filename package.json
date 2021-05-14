@@ -28,14 +28,14 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+  },
+  "devDependencies": {
     "@nestjs/cli": "^7.6.0",
     "@types/node": "^13.9.1",
     "@nestjs/common": "^7.6.15",
     "@nestjs/core": "^7.6.15",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2"
-  },
-  "devDependencies": {
+    "rimraf": "^3.0.2",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
     "@types/express": "^4.17.3",
