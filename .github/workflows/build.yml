@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1.4.3
+    - run: npm install
+    - run: npm run test:cov
+    - name: Codecov Action
+      uses: Atrox/codecov-action@v0.1.3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1.4.3
+      - run: npm install --production
+      - run: npm run build

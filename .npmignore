@@ -1,0 +1,12 @@
+/.github
+/node_modules
+/src
+/test
+.eslintrc.js
+.gitignore
+.npmignore
+.prettierrc
+nest-cli.json
+package-lock.json
+tsconfig.build.json
+tsconfig.json
