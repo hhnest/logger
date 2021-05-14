@@ -25,12 +25,12 @@ $ npm install @hhnest/logger --save
 import {LoggerModule} from '@hhnest/logger';
 import { LogLevel } from '@nestjs/common';
 
-const initialLevel: LogLevel[] = ['error', 'warn', 'log', 'debug'];
+const initialLevels: LogLevel[] = ['error', 'warn', 'log', 'debug'];
 ...
 @Module({
   imports: [
     HttpModule,
-    LoggerModule.forRoot(initialLevel),
+    LoggerModule.forRoot(initialLevels),
     // or 
     LoggerModule.forRoot(), // ['error', 'warn', 'log']
     ...
