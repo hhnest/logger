@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Logger, LogLevel, Module } from '@nestjs/common';
 import { createLoggerProviders } from './logger.providers';
 import { LoggerController } from './logger.controller';
 
@@ -9,7 +9,8 @@ const loggerProviders = createLoggerProviders();
   exports: [LoggerController, ...loggerProviders],
 })
 export class LoggerModule {
-  static forRoot(): DynamicModule {
+  static forRoot(levels: LogLevel[] = ['error', 'warn', 'log'] ): DynamicModule {
+    Logger.overrideLogger(levels);
     const prefixedLoggerProviders = createLoggerProviders();
     return {
       module: LoggerModule,
