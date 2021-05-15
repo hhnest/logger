@@ -11,8 +11,6 @@ export class LoggerController {
   ) {
   }
 
-  readonly logger: Logger = new Logger(LoggerController.name);
-
   @Get()
   logLevels(): {context: string, levels: LogLevel[]}[] {
     const result = [{context: 'RootLogger', levels: (Logger as any).logLevels}];
@@ -24,63 +22,8 @@ export class LoggerController {
     return result;
   }
 
-  @Get('verbose')
-  setLogLevelVerbose() {
-    Logger.overrideLogger(['error', 'warn', 'log', 'debug', 'verbose']);
-    const lvls: LogLevel[] = (Logger as any).logLevels;;
-    this.showLogs(new Logger(), 'RootLogger', lvls);
-    return lvls;
-  }
-
-  @Get('debug')
-  setLogLevelDebug() {
-    Logger.overrideLogger(['error', 'warn', 'log', 'debug']);
-    const lvls: LogLevel[] = (Logger as any).logLevels;;
-    this.showLogs(new Logger(), 'RootLogger', lvls);
-    return lvls;
-  }
-
-  @Get('log')
-  setLogLevelLog() {
-    Logger.overrideLogger(['error', 'warn', 'log']);
-    const lvls: LogLevel[] = (Logger as any).logLevels;;
-    this.showLogs(new Logger(), 'RootLogger', lvls);
-    return lvls;
-  }
-
-  @Get('warn')
-  setLogLevelWarn() {
-    Logger.overrideLogger(['error', 'warn']);
-    const lvls: LogLevel[] = (Logger as any).logLevels;;
-    this.showLogs(new Logger(), 'RootLogger', lvls);
-    return lvls;
-  }
-
-  @Get('error')
-  setLogLevelError() {
-    Logger.overrideLogger(['error']);
-    const lvls: LogLevel[] = (Logger as any).logLevels;;
-    this.showLogs(new Logger(), 'RootLogger', lvls);
-    return lvls;
-  }
-
-  @Get('reset')
-  resetLogLevel() {
-    Logger.overrideLogger(['error', 'warn', 'log', 'debug']);
-    const lvls: LogLevel[] = (Logger as any).logLevels;;
-    this.showLogs(new Logger(), 'RootLogger', lvls);
-    return lvls;
-  }
-
-  @Get(':cls')
-  getLogClassLevel(@Param('cls') cls: string) {
-    const logger: LoggerService = this.moduleRef.get(`Log${cls}`);
-    return logger.levels || (Logger as any).logLevels;
-  }
-
-  @Get(':cls/:level')
-  setLogClassLevel(@Param('cls') cls: string, @Param('level') level: string) {
-    const logger: LoggerService = this.moduleRef.get(`Log${cls}`);
+  @Get('level/:level')
+  setLogLevel(@Param('level') level: string) {
     let levels: LogLevel[] | undefined = [];
     switch (level) {
       case 'verbose':
@@ -97,9 +40,40 @@ export class LoggerController {
       default:
         levels = undefined;
     }
-    logger.setLevels(levels);
+    Logger.overrideLogger(levels || ['error', 'warn', 'log', 'debug']);
+    const lvls: LogLevel[] = (Logger as any).logLevels;
+    this.showLogs(new Logger(), 'RootLogger', lvls);
+    return lvls;
+  }
+
+  @Get('context/:context')
+  getLogContextLevel(@Param('context') context: string) {
+    const logger: LoggerService = this.moduleRef.get(`Log${context}`);
+    return logger.levels || (Logger as any).logLevels;
+  }
+
+  @Get('context/:context/level/:level')
+  setLogContextLevel(@Param('context') context: string, @Param('level') level: string) {
+    const logger: LoggerService = this.moduleRef.get(`Log${context}`);
+    let levels: LogLevel[] | undefined = [];
+    switch (level) {
+      case 'verbose':
+        levels.push('verbose');
+      case 'debug':
+        levels.push('debug');
+      case 'log':
+        levels.push('log');
+      case 'warn':
+        levels.push('warn');
+      case 'error':
+        levels.push('error');
+        break;
+      default:
+        levels = undefined;
+    }
+    logger.setLogLevels(levels);
     const lvls: LogLevel[] = logger.levels || (Logger as any).logLevels;
-    this.showLogs(logger, cls, lvls);
+    this.showLogs(logger, context, lvls);
     return lvls;
   }
 
