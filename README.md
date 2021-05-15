@@ -76,7 +76,7 @@ export class MyService {
 ### Change levels of logger globally 
 
 ```xpath
-/logger/(error|warn|log|debug|verbose|reset)
+/logger/level/(error|warn|log|debug|verbose|reset)
 ```
 
 If specific logger has been set to another level, level of it doesn't change.
@@ -86,7 +86,7 @@ If specific logger has been set to another level, level of it doesn't change.
 ### Return specific logger levels 
 
 ```xpath
-/logger/SpecificLogger
+/logger/context/SpecificLogger
 ```
 
 ---
@@ -94,7 +94,7 @@ If specific logger has been set to another level, level of it doesn't change.
 ### Change level of specific logger 
 
 ```xpath
-/logger/SpecificLogger/(error|warn|log|debug|verbose|reset)
+/logger/context/SpecificLogger/level/(error|warn|log|debug|verbose|reset)
 ```
 
 If reset, remove specific and use global levels for it.  
