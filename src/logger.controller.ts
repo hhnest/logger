@@ -1,7 +1,7 @@
-import { Controller, Get, Logger, LogLevel, Param } from '@nestjs/common';
+import { Controller, Get, Header, HostParam, Logger, LogLevel, Param, Req } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { LoggerService } from './logger.service';
-import { prefixesForLoggers } from './logger.decorator';
+import { contextLoggers } from './logger.decorator';
 
 @Controller('logger')
 export class LoggerController {
@@ -11,18 +11,38 @@ export class LoggerController {
   ) {
   }
 
+  getLevel(levels: LogLevel[]): LogLevel {
+    if (levels.includes('verbose')) {
+      return 'verbose';
+    }
+    if (levels.includes('debug')) {
+      return 'debug';
+    }
+    if (levels.includes('log')) {
+      return 'log';
+    }
+    if (levels.includes('warn')) {
+      return 'warn';
+    }
+    if (levels.includes('error')) {
+      return 'error';
+    }
+  }
+
+  getApi(context: string) {
+    return ['log', 'error', 'warn', 'debug', 'verbose'].map((level: LogLevel) => !!context ? `${context}/level/${level}` : `level/${level}`);
+  }
+
   @Get()
-  logLevels(): {context: string, levels: LogLevel[]}[] {
-    const result = [{context: 'RootLogger', levels: (Logger as any).logLevels}];
-    result.push(...prefixesForLoggers.map(ctx => {
-      const logger: LoggerService = this.moduleRef.get(`Log${ctx}`);
-      const levels: LogLevel[] = logger.levels || (Logger as any).logLevels;
-      return {context: ctx, levels};
-    }));
+  @Header('Content-type', 'application/json')
+  logLevels(): {context: string, level: LogLevel, api: string[]}[] {
+    const result = [{context: 'RootLogger', level: this.getLevel((Logger as any).logLevels), api: this.getApi(undefined)}];
+    result.push(...contextLoggers.map((context: string) => this.getLogContextLevel(context)));
     return result;
   }
 
   @Get('level/:level')
+  @Header('Content-type', 'application/json')
   setLogLevel(@Param('level') level: string) {
     let levels: LogLevel[] | undefined = [];
     switch (level) {
@@ -46,13 +66,16 @@ export class LoggerController {
     return lvls;
   }
 
-  @Get('context/:context')
+  @Get(':context')
+  @Header('Content-type', 'application/json')
   getLogContextLevel(@Param('context') context: string) {
     const logger: LoggerService = this.moduleRef.get(`Log${context}`);
-    return logger.levels || (Logger as any).logLevels;
+    const levels = logger.levels || (Logger as any).logLevels;
+    return {context, level: this.getLevel(levels), api: this.getApi(context)}
   }
 
-  @Get('context/:context/level/:level')
+  @Get(':context/level/:level')
+  @Header('Content-type', 'application/json')
   setLogContextLevel(@Param('context') context: string, @Param('level') level: string) {
     const logger: LoggerService = this.moduleRef.get(`Log${context}`);
     let levels: LogLevel[] | undefined = [];

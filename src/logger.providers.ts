@@ -1,4 +1,4 @@
-import { prefixesForLoggers } from './logger.decorator';
+import { contextLoggers } from './logger.decorator';
 import { Logger, Provider } from '@nestjs/common';
 import { LoggerService } from './logger.service';
 
@@ -10,5 +10,5 @@ function createLoggerProvider(context: string): Provider<Logger> {
 }
 
 export function createLoggerProviders(): Array<Provider<Logger>> {
-  return prefixesForLoggers.map(context => createLoggerProvider(context));
+  return contextLoggers.map(context => createLoggerProvider(context));
 }
