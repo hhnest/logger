@@ -2,7 +2,9 @@ import { Controller, Get, Header, HostParam, Logger, LogLevel, Param, Req } from
 import { ModuleRef } from '@nestjs/core';
 import { LoggerService } from './logger.service';
 import { contextLoggers } from './logger.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('LOGGER')
 @Controller('logger')
 export class LoggerController {
 
